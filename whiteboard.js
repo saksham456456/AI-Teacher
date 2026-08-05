@@ -10,12 +10,12 @@ const FONT_FAMILY = "'Patrick Hand', cursive";
 const HEADING_FONT_FAMILY = "'Kalam', cursive";
 
 const INK_COLORS = {
-  heading: '#173a76',
-  text: '#2b2b2e',
-  bullet: '#2b2b2e',
-  equation: '#1e5fbf',
-  diagram: '#2b2b2e',
-  emphasize: '#d94f30'
+  heading: '#ffeb3b', // Bright yellow
+  text: '#ffffff',    // White
+  bullet: '#ffffff',  // White
+  equation: '#4dd0e1',// Cyan
+  diagram: '#a5d6a7', // Light green
+  emphasize: '#ff5252'// Bright red
 };
 
 export class Whiteboard {
@@ -97,11 +97,12 @@ export class Whiteboard {
     this._applyScale(this.cctx);
   }
 
-  async runBlocks(blocks) {
+  async runBlocks(blocks, onBlockComplete) {
     this._cancelled = false;
     for (const block of blocks) {
       if (this._cancelled) break;
       await this._runBlock(block);
+      if (onBlockComplete) onBlockComplete(block);
       await this._sleep(260);
     }
   }

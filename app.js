@@ -11,8 +11,79 @@ const askButton = askForm.querySelector('button');
 const newTopicBtn = document.getElementById('newTopicBtn');
 const statusLine = document.getElementById('statusLine');
 
+
 let whiteboard = null;
 let interactionId = null;
+
+// Gamification State
+let currentXP = parseInt(localStorage.getItem('aiTeacherXP') || '0', 10);
+let currentLevel = parseInt(localStorage.getItem('aiTeacherLevel') || '1', 10);
+const levelXPThresholds = [0, 100, 250, 500, 800, 1200, 1800, 2500];
+
+function getXPForNextLevel() {
+  return levelXPThresholds[currentLevel] || (currentLevel * 1000);
+}
+
+function updateGamificationUI() {
+  const levelBadge = document.getElementById('levelBadge');
+  const xpBarFill = document.getElementById('xpBarFill');
+  const xpText = document.getElementById('xpText');
+
+  if (levelBadge) levelBadge.textContent = `LVL ${currentLevel}`;
+
+  const xpNeeded = getXPForNextLevel();
+  const prevLevelXP = levelXPThresholds[currentLevel - 1] || 0;
+  const currentLevelProgress = currentXP - prevLevelXP;
+  const requiredLevelProgress = xpNeeded - prevLevelXP;
+
+  const percentage = Math.min(100, Math.max(0, (currentLevelProgress / requiredLevelProgress) * 100));
+
+  if (xpBarFill) xpBarFill.style.width = `${percentage}%`;
+  if (xpText) xpText.textContent = `${currentXP} / ${xpNeeded} XP`;
+}
+
+function showFloatingText(text, isLevelUp = false) {
+  const el = document.createElement('div');
+  el.className = isLevelUp ? 'floating-text level-up-text' : 'floating-text';
+  el.textContent = text;
+
+  if (isLevelUp) {
+    el.style.left = '50%';
+    el.style.top = '40%';
+  } else {
+    // Randomize position slightly around the center
+    const rx = 30 + Math.random() * 40;
+    const ry = 40 + Math.random() * 30;
+    el.style.left = `${rx}%`;
+    el.style.top = `${ry}%`;
+  }
+
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2500);
+}
+
+function addXP(amount) {
+  currentXP += amount;
+  showFloatingText(`+${amount} XP`);
+
+  let xpNeeded = getXPForNextLevel();
+  while (currentXP >= xpNeeded) {
+    currentLevel++;
+    setTimeout(() => {
+      showFloatingText('LEVEL UP!', true);
+    }, 500);
+    xpNeeded = getXPForNextLevel();
+  }
+
+  localStorage.setItem('aiTeacherXP', currentXP);
+  localStorage.setItem('aiTeacherLevel', currentLevel);
+
+  updateGamificationUI();
+}
+
+// Initialize UI
+updateGamificationUI();
+
 
 topicForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -57,7 +128,13 @@ async function startLesson(topic) {
     askDock.hidden = false;
     newTopicBtn.hidden = false;
     setStatus('Writing on the board…');
-    await whiteboard.runBlocks(data.blocks);
+    await whiteboard.runBlocks(data.blocks, (block) => {
+      let xpGain = 10;
+      if (block.type === 'heading') xpGain = 20;
+      if (block.type === 'diagram') xpGain = 35;
+      if (block.type === 'equation') xpGain = 25;
+      addXP(xpGain);
+    });
     setStatus('Ask a follow-up question any time.');
   } catch (err) {
     setStatus('⚠ ' + err.message);
@@ -82,7 +159,13 @@ async function askQuestion(question) {
 
     interactionId = data.interactionId;
     setStatus('Writing on the board…');
-    await whiteboard.runBlocks(data.blocks);
+    await whiteboard.runBlocks(data.blocks, (block) => {
+      let xpGain = 10;
+      if (block.type === 'heading') xpGain = 20;
+      if (block.type === 'diagram') xpGain = 35;
+      if (block.type === 'equation') xpGain = 25;
+      addXP(xpGain);
+    });
     setStatus('Ask another question any time.');
   } catch (err) {
     setStatus('⚠ ' + err.message);

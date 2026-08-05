@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
-  href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Patrick+Hand&family=Space+Grotesk:wght@500;600&display=swap"
+  href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Patrick+Hand&family=Space+Grotesk:wght@500;600&family=Press+Start+2P&display=swap"
   rel="stylesheet"
 />
 <link rel="stylesheet" href="/style.css" />
@@ -16,6 +16,13 @@
 <div class="app">
   <header class="app-header">
     <span class="brand">AI Teacher</span>
+    <div class="gamification-status">
+      <div class="level-badge" id="levelBadge">LVL 1</div>
+      <div class="xp-bar-container">
+        <div class="xp-bar-fill" id="xpBarFill"></div>
+      </div>
+      <div class="xp-text" id="xpText">0 / 100 XP</div>
+    </div>
     <button id="newTopicBtn" class="ghost-btn" hidden>New topic</button>
   </header>
 
