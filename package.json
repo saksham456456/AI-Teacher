@@ -1,0 +1,21 @@
+{
+  "name": "ai-teacher",
+  "version": "1.0.0",
+  "description": "An AI tutor that teaches by writing on a whiteboard, powered by the Groq API.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^4.22.2"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "vercel": "^58.5.1"
+  }
+}
