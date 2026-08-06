@@ -17,6 +17,6 @@
     "node": ">=18"
   },
   "devDependencies": {
-    "vercel": "^58.5.1"
+    "vercel": "^58.7.1"
   }
 }

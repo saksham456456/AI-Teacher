@@ -182,6 +182,7 @@ function resetBoard() {
   topicInput.value = '';
   boardIntro.hidden = false;
   setStatus('');
+  setBusy(false);
 }
 
 function setBusy(isBusy) {
