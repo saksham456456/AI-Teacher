@@ -183,6 +183,7 @@ function resetBoard() {
   boardIntro.hidden = false;
   setStatus('');
   setBusy(false);
+  setTimeout(() => topicInput.focus(), 50); // Force browser to focus the input after un-hiding
 }
 
 function setBusy(isBusy) {
